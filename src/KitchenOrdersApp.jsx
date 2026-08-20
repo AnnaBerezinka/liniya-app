@@ -137,6 +137,7 @@ export default function KitchenOrdersApp() {
     mutate((s) => { s.menu = []; return s; });
   }, [mutate]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const addOrder = useCallback((cart) => {
     mutate((s) => {
       const evt = getEventData(s, s.currentDate);

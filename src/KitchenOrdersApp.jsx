@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts";
 import { loadState, saveState } from "./firebaseStorage";
 
@@ -363,6 +363,10 @@ function MenuScreen({ menu, onAdd, onRemove, onClear }) {
 function CashierScreen({ menu, onSubmit, orders, now }) {
   const [cart, setCart] = useState({});
 
+  const setQty = (id, qty) => {
+    setCart((c) => ({ ...c, [id]: Math.max(0, qty) }));
+  };
+
   const handleSubmit = () => {
     onSubmit(cart);
     setCart({});
@@ -382,17 +386,20 @@ function CashierScreen({ menu, onSubmit, orders, now }) {
           <div style={{ marginBottom: 20 }}>
             <h4 style={{ color: COLORS.amber, marginBottom: 12 }}>Еда</h4>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 12 }}>
-              {food.map((m) => (
-                <div key={m.id} style={{ background: COLORS.panel, border: `1px solid ${COLORS.line}`, borderRadius: 4, padding: 12 }}>
-                  <div style={{ fontWeight: 600, marginBottom: 8 }}>{m.name}</div>
-                  <div style={{ fontSize: 12, color: COLORS.muted, marginBottom: 8 }}>{fmtMoney(m.price)}</div>
-                  <div style={{ display: "flex", gap: 4 }}>
-                    <button onClick={() => setCart({ ...cart, [m.id]: (cart[m.id] || 0) - 1 })} style={{ flex: 1, padding: "4px", background: COLORS.panel2, border: `1px solid ${COLORS.line}`, borderRadius: 2, color: COLORS.ink, cursor: "pointer" }}>−</button>
-                    <div style={{ flex: 1, textAlign: "center", padding: "4px" }}>{cart[m.id] || 0}</div>
-                    <button onClick={() => setCart({ ...cart, [m.id]: (cart[m.id] || 0) + 1 })} style={{ flex: 1, padding: "4px", background: COLORS.panel2, border: `1px solid ${COLORS.line}`, borderRadius: 2, color: COLORS.ink, cursor: "pointer" }}>+</button>
+              {food.map((m) => {
+                const qty = cart[m.id] || 0;
+                return (
+                  <div key={m.id} style={{ background: COLORS.panel, border: `1px solid ${COLORS.line}`, borderRadius: 4, padding: 12 }}>
+                    <div style={{ fontWeight: 600, marginBottom: 8 }}>{m.name}</div>
+                    <div style={{ fontSize: 12, color: COLORS.muted, marginBottom: 8 }}>{fmtMoney(m.price)}</div>
+                    <div style={{ display: "flex", gap: 4 }}>
+                      <button onClick={() => setQty(m.id, qty - 1)} style={{ flex: 1, padding: "4px", background: COLORS.panel2, border: `1px solid ${COLORS.line}`, borderRadius: 2, color: COLORS.ink, cursor: "pointer" }}>−</button>
+                      <div style={{ flex: 1, textAlign: "center", padding: "4px" }}>{qty}</div>
+                      <button onClick={() => setQty(m.id, qty + 1)} style={{ flex: 1, padding: "4px", background: COLORS.panel2, border: `1px solid ${COLORS.line}`, borderRadius: 2, color: COLORS.ink, cursor: "pointer" }}>+</button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
@@ -401,17 +408,20 @@ function CashierScreen({ menu, onSubmit, orders, now }) {
           <div>
             <h4 style={{ color: COLORS.green, marginBottom: 12 }}>Бар</h4>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 12 }}>
-              {bar.map((m) => (
-                <div key={m.id} style={{ background: COLORS.panel, border: `1px solid ${COLORS.line}`, borderRadius: 4, padding: 12 }}>
-                  <div style={{ fontWeight: 600, marginBottom: 8 }}>{m.name}</div>
-                  <div style={{ fontSize: 12, color: COLORS.muted, marginBottom: 8 }}>{fmtMoney(m.price)}</div>
-                  <div style={{ display: "flex", gap: 4 }}>
-                    <button onClick={() => setCart({ ...cart, [m.id]: (cart[m.id] || 0) - 1 })} style={{ flex: 1, padding: "4px", background: COLORS.panel2, border: `1px solid ${COLORS.line}`, borderRadius: 2, color: COLORS.ink, cursor: "pointer" }}>−</button>
-                    <div style={{ flex: 1, textAlign: "center", padding: "4px" }}>{cart[m.id] || 0}</div>
-                    <button onClick={() => setCart({ ...cart, [m.id]: (cart[m.id] || 0) + 1 })} style={{ flex: 1, padding: "4px", background: COLORS.panel2, border: `1px solid ${COLORS.line}`, borderRadius: 2, color: COLORS.ink, cursor: "pointer" }}>+</button>
+              {bar.map((m) => {
+                const qty = cart[m.id] || 0;
+                return (
+                  <div key={m.id} style={{ background: COLORS.panel, border: `1px solid ${COLORS.line}`, borderRadius: 4, padding: 12 }}>
+                    <div style={{ fontWeight: 600, marginBottom: 8 }}>{m.name}</div>
+                    <div style={{ fontSize: 12, color: COLORS.muted, marginBottom: 8 }}>{fmtMoney(m.price)}</div>
+                    <div style={{ display: "flex", gap: 4 }}>
+                      <button onClick={() => setQty(m.id, qty - 1)} style={{ flex: 1, padding: "4px", background: COLORS.panel2, border: `1px solid ${COLORS.line}`, borderRadius: 2, color: COLORS.ink, cursor: "pointer" }}>−</button>
+                      <div style={{ flex: 1, textAlign: "center", padding: "4px" }}>{qty}</div>
+                      <button onClick={() => setQty(m.id, qty + 1)} style={{ flex: 1, padding: "4px", background: COLORS.panel2, border: `1px solid ${COLORS.line}`, borderRadius: 2, color: COLORS.ink, cursor: "pointer" }}>+</button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
@@ -486,33 +496,66 @@ function AnalyticsScreen({ state }) {
   const currentRevenue = currentCompleted.reduce((s, o) => s + o.items.reduce((sum, i) => sum + i.price * i.qty, 0), 0);
   const avgReadyMs = currentCompleted.length > 0 ? currentCompleted.reduce((s, o) => s + (o.completedAt - o.createdAt), 0) / currentCompleted.length : 0;
 
-  const filteredData = {};
-  for (const date of selectedDates) {
-    const evt = state.events[date];
-    if (!evt) continue;
-    const completed = evt.orders.filter((o) => o.completed);
-    const perItem = {};
-    for (const o of completed) {
-      for (const i of o.items) {
-        if (!perItem[i.id]) perItem[i.id] = { name: i.name, category: i.category, dates: {} };
-        if (!perItem[i.id].dates[date]) perItem[i.id].dates[date] = { qty: 0, revenue: 0 };
-        perItem[i.id].dates[date].qty += i.qty;
-        perItem[i.id].dates[date].revenue += i.qty * i.price;
+  const filteredData = useMemo(() => {
+    const data = {};
+    for (const date of selectedDates) {
+      const evt = state.events[date];
+      if (!evt) continue;
+      const completed = evt.orders.filter((o) => o.completed);
+      const perItem = {};
+      for (const o of completed) {
+        for (const i of o.items) {
+          if (!perItem[i.id]) perItem[i.id] = { name: i.name, category: i.category, dates: {} };
+          if (!perItem[i.id].dates[date]) perItem[i.id].dates[date] = { qty: 0, revenue: 0 };
+          perItem[i.id].dates[date].qty += i.qty;
+          perItem[i.id].dates[date].revenue += i.qty * i.price;
+        }
       }
+      Object.assign(data, perItem);
     }
-    Object.assign(filteredData, perItem);
-  }
+    return data;
+  }, [selectedDates, state.events]);
 
-  const rows = Object.values(filteredData).sort((a, b) => {
-    const sumA = Object.values(a.dates).reduce((s, d) => s + d.revenue, 0);
-    const sumB = Object.values(b.dates).reduce((s, d) => s + d.revenue, 0);
-    if (sortOrder === 'none') return 0;
-    if (sortOrder === 'category-revenue') {
-      if (a.category !== b.category) return a.category === 'food' ? -1 : 1;
+  const rows = useMemo(() => {
+    return Object.values(filteredData).sort((a, b) => {
+      const sumA = Object.values(a.dates).reduce((s, d) => s + d.revenue, 0);
+      const sumB = Object.values(b.dates).reduce((s, d) => s + d.revenue, 0);
+      if (sortOrder === 'none') return 0;
+      if (sortOrder === 'category-revenue') {
+        if (a.category !== b.category) return a.category === 'food' ? -1 : 1;
+        return sumB - sumA;
+      }
       return sumB - sumA;
-    }
-    return sumB - sumA;
-  });
+    });
+  }, [filteredData, sortOrder]);
+
+  const qtyChartData = useMemo(() => {
+    return rows.map((r) => {
+      const obj = { name: r.name.length > 14 ? r.name.slice(0, 13) + "…" : r.name, category: r.category };
+      if (selectedDates.length === 1) {
+        obj[`qty_`] = r.dates[selectedDates[0]]?.qty || 0;
+      } else {
+        for (const date of selectedDates) {
+          obj[`qty_${date}`] = r.dates[date]?.qty || 0;
+        }
+      }
+      return obj;
+    });
+  }, [rows, selectedDates]);
+
+  const revenueChartData = useMemo(() => {
+    return rows.map((r) => {
+      const obj = { name: r.name.length > 14 ? r.name.slice(0, 13) + "…" : r.name, category: r.category };
+      if (selectedDates.length === 1) {
+        obj[`rev_`] = r.dates[selectedDates[0]]?.revenue || 0;
+      } else {
+        for (const date of selectedDates) {
+          obj[`rev_${date}`] = r.dates[date]?.revenue || 0;
+        }
+      }
+      return obj;
+    });
+  }, [rows, selectedDates]);
 
   return (
     <div style={{ padding: "0 22px" }}>
@@ -523,21 +566,86 @@ function AnalyticsScreen({ state }) {
       </div>
 
       <div style={{ marginBottom: 12, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-        <span style={{ fontSize: 12, color: COLORS.muted, fontWeight: 500 }}>Сортировка:</span>
-        {["none", "category-revenue", "default"].map((mode) => (
-          <button key={mode} onClick={() => setSortOrder(mode)} style={{
+        <span style={{ fontSize: 12, color: COLORS.muted, fontWeight: 500 }}>Выбрать даты:</span>
+        {allDates.map((d) => (
+          <button key={d} onClick={() => {
+            if (selectedDates.includes(d)) {
+              if (selectedDates.length > 1) setSelectedDates(selectedDates.filter((x) => x !== d));
+            } else {
+              setSelectedDates([...selectedDates, d].sort().reverse());
+            }
+          }} style={{
             fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, padding: "5px 10px", borderRadius: 4,
-            border: `1px solid ${sortOrder === mode ? COLORS.amber : COLORS.line}`,
-            background: sortOrder === mode ? COLORS.amberSoft : "transparent",
-            color: sortOrder === mode ? COLORS.ink : COLORS.muted, cursor: "pointer",
+            border: `1px solid ${selectedDates.includes(d) ? COLORS.amber : COLORS.line}`,
+            background: selectedDates.includes(d) ? COLORS.amberSoft : "transparent",
+            color: selectedDates.includes(d) ? COLORS.ink : COLORS.muted, cursor: "pointer",
           }}>
-            {mode === "none" ? "✕ без сортировки" : mode === "category-revenue" ? "По категориям + выручке" : "По выручке"}
+            {d}
           </button>
         ))}
       </div>
 
+      {selectedDates.length === 1 && (
+        <div style={{ marginBottom: 12, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          <span style={{ fontSize: 12, color: COLORS.muted, fontWeight: 500 }}>Сортировка:</span>
+          {["none", "category-revenue", "default"].map((mode) => (
+            <button key={mode} onClick={() => setSortOrder(mode)} style={{
+              fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, padding: "5px 10px", borderRadius: 4,
+              border: `1px solid ${sortOrder === mode ? COLORS.amber : COLORS.line}`,
+              background: sortOrder === mode ? COLORS.amberSoft : "transparent",
+              color: sortOrder === mode ? COLORS.ink : COLORS.muted, cursor: "pointer",
+            }}>
+              {mode === "none" ? "✕ без сортировки" : mode === "category-revenue" ? "По категориям + выручке" : "По выручке"}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {selectedDates.length === 1 && (
+        <>
+          <div style={{ background: COLORS.panel, border: `1px solid ${COLORS.line}`, borderRadius: 8, padding: 16, marginBottom: 20 }}>
+            <h4 style={{ marginTop: 0, color: COLORS.muted, textTransform: "uppercase", fontSize: 12 }}>Продано по позициям, шт</h4>
+            {qtyChartData.length === 0 ? <p style={{ color: COLORS.muted }}>Нет данных</p> : (
+              <ResponsiveContainer width="100%" height={Math.max(350, qtyChartData.length * 50)}>
+                <BarChart data={qtyChartData} layout="vertical" margin={{ left: 200, right: 60, top: 4, bottom: 4 }}>
+                  <CartesianGrid stroke={COLORS.line} horizontal={false} />
+                  <XAxis type="number" stroke={COLORS.muted} tick={{ fontSize: 13, fill: COLORS.muted }} allowDecimals={false} />
+                  <YAxis type="category" dataKey="name" stroke={COLORS.muted} tick={{ fontSize: 14, fill: COLORS.ink }} width={190} />
+                  <Tooltip contentStyle={{ background: COLORS.panel2, border: `1px solid ${COLORS.line}`, borderRadius: 6, fontSize: 12 }} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+                  <Bar dataKey="qty_" label={{ position: "right", formatter: (v) => v > 0 ? v : "", fill: COLORS.ink, fontSize: 13, fontFamily: "'IBM Plex Mono', monospace" }}>
+                    {qtyChartData.map((item, idx) => (
+                      <Cell key={`cell-${idx}`} fill={item.category === "food" ? COLORS.amber : COLORS.green} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          <div style={{ background: COLORS.panel, border: `1px solid ${COLORS.line}`, borderRadius: 8, padding: 16, marginBottom: 20 }}>
+            <h4 style={{ marginTop: 0, color: COLORS.muted, textTransform: "uppercase", fontSize: 12 }}>Выручка по позициям, тыс. ₽</h4>
+            {revenueChartData.length === 0 ? <p style={{ color: COLORS.muted }}>Нет данных</p> : (
+              <ResponsiveContainer width="100%" height={Math.max(350, revenueChartData.length * 50)}>
+                <BarChart data={revenueChartData} layout="vertical" margin={{ left: 200, right: 80, top: 4, bottom: 4 }}>
+                  <CartesianGrid stroke={COLORS.line} horizontal={false} />
+                  <XAxis type="number" stroke={COLORS.muted} tick={{ fontSize: 13, fill: COLORS.muted }} />
+                  <YAxis type="category" dataKey="name" stroke={COLORS.muted} tick={{ fontSize: 14, fill: COLORS.ink }} width={190} />
+                  <Tooltip contentStyle={{ background: COLORS.panel2, border: `1px solid ${COLORS.line}`, borderRadius: 6, fontSize: 12 }} formatter={(val) => fmtMoney(val)} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+                  <Bar dataKey="rev_" label={{ position: "center", formatter: (v) => v > 0 ? (v >= 1000 ? `${(v / 1000).toFixed(1)}k` : `${Math.round(v)}`) : "", fill: COLORS.paper, fontSize: 12, fontFamily: "'IBM Plex Mono', monospace", fontWeight: 600 }}>
+                    {revenueChartData.map((item, idx) => (
+                      <Cell key={`cell-${idx}`} fill={item.category === "food" ? COLORS.amber : COLORS.green} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </>
+      )}
+
       <div style={{ background: COLORS.panel, border: `1px solid ${COLORS.line}`, borderRadius: 8, padding: 16 }}>
-        {rows.length === 0 ? <p style={{ color: COLORS.muted }}>Нет выполненных заказов</p> : (
+        <h4 style={{ marginTop: 0, color: COLORS.muted, textTransform: "uppercase", fontSize: 12 }}>{selectedDates.length === 1 ? "Таблица выручки" : "Сравнение по датам — Позиции"}</h4>
+        {rows.length === 0 ? <p style={{ color: COLORS.muted }}>Нет данных</p> : (
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
               <tr>
@@ -557,10 +665,10 @@ function AnalyticsScreen({ state }) {
                   <td style={{ padding: "8px", borderBottom: `1px solid ${COLORS.line}` }}>{r.name}</td>
                   <td style={{ padding: "8px", borderBottom: `1px solid ${COLORS.line}`, color: r.category === "food" ? COLORS.amber : COLORS.green }}>{r.category === "food" ? "Еда" : "Бар"}</td>
                   {selectedDates.map((d) => (
-                    <td key={`qty_${r.name}_${d}`} style={{ padding: "8px", borderBottom: `1px solid ${COLORS.line}`, textAlign: "right" }}>{r.dates[d]?.qty || "—"}</td>
+                    <td key={`qty_${r.name}_${d}`} style={{ padding: "8px", borderBottom: `1px solid ${COLORS.line}`, textAlign: "right", fontFamily: "'IBM Plex Mono', monospace", fontSize: 11 }}>{r.dates[d]?.qty || "—"}</td>
                   ))}
                   {selectedDates.map((d) => (
-                    <td key={`rev_${r.name}_${d}`} style={{ padding: "8px", borderBottom: `1px solid ${COLORS.line}`, textAlign: "right" }}>{r.dates[d]?.revenue ? fmtMoney(r.dates[d].revenue) : "—"}</td>
+                    <td key={`rev_${r.name}_${d}`} style={{ padding: "8px", borderBottom: `1px solid ${COLORS.line}`, textAlign: "right", fontFamily: "'IBM Plex Mono', monospace", fontSize: 11 }}>{r.dates[d]?.revenue ? fmtMoney(r.dates[d].revenue) : "—"}</td>
                   ))}
                 </tr>
               ))}

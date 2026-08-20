@@ -486,15 +486,21 @@ function OrderCard({ order, now, onReady, type }) {
   );
 }
 
-function AnalyticsScreen({ state }) {
+const AnalyticsScreen = React.memo(function AnalyticsScreen({ state }) {
   const allDates = Object.keys(state.events).sort().reverse();
   const [selectedDates, setSelectedDates] = useState([state.currentDate]);
   const [sortOrder, setSortOrder] = useState('category-revenue');
 
-  const currentEvent = state.events[state.currentDate];
-  const currentCompleted = currentEvent.orders.filter((o) => o.completed);
-  const currentRevenue = currentCompleted.reduce((s, o) => s + o.items.reduce((sum, i) => sum + i.price * i.qty, 0), 0);
-  const avgReadyMs = currentCompleted.length > 0 ? currentCompleted.reduce((s, o) => s + (o.completedAt - o.createdAt), 0) / currentCompleted.length : 0;
+  // ✅ ИСПРАВЛЕНИЕ: Вычисляем статистику для ВЫБРАННЫХ дат
+  let allCompleted = [];
+  for (const date of selectedDates) {
+    const evt = state.events[date];
+    if (evt) {
+      allCompleted = [...allCompleted, ...evt.orders.filter((o) => o.completed)];
+    }
+  }
+  const currentRevenue = allCompleted.reduce((s, o) => s + o.items.reduce((sum, i) => sum + i.price * i.qty, 0), 0);
+  const avgReadyMs = allCompleted.length > 0 ? allCompleted.reduce((s, o) => s + (o.completedAt - o.createdAt), 0) / allCompleted.length : 0;
 
   const filteredData = useMemo(() => {
     const data = {};
@@ -561,8 +567,8 @@ function AnalyticsScreen({ state }) {
     <div style={{ padding: "0 22px" }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 22 }}>
         <StatCard label="Выручка" value={fmtMoney(currentRevenue)} />
-        <StatCard label="Готовых заказов, шт" value={currentCompleted.length} />
-        <StatCard label="Время готовности заказа" value={currentCompleted.length ? fmtDuration(avgReadyMs) : "—"} />
+        <StatCard label="Готовых заказов, шт" value={allCompleted.length} />
+        <StatCard label="Среднее время готовности заказа, мин" value={allCompleted.length ? fmtDuration(avgReadyMs) : "—"} />
       </div>
 
       <div style={{ marginBottom: 12, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
@@ -678,7 +684,7 @@ function AnalyticsScreen({ state }) {
       </div>
     </div>
   );
-}
+});
 
 function StatCard({ label, value }) {
   return (

@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts";
 import { loadState, saveState } from "./firebaseStorage";
 
+/* eslint-disable react-hooks/exhaustive-deps */
+
+
 const COLORS = {
   bg: "#17140F",
   panel: "#211D16",

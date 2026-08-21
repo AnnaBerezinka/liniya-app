@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts";
 import { supabase } from "./supabaseClient";
-import { saveState, loadState, subscribeToStateChanges, getCurrentUser, signUp, signIn, signOut } from "./supabaseStorage"; 
-
+import { saveState, loadState, subscribeToStateChanges, signUp, signIn, signOut } from "./supabaseStorage";
 /* eslint-disable react-hooks/exhaustive-deps */
 
 const COLORS = {

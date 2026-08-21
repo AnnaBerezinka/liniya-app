@@ -657,20 +657,32 @@ function CashierScreen({ menu, onSubmit, orders, now }) {
 }
 
 function KitchenScreen({ orders, onReady, now }) {
-  const food = orders.filter((o) => o.hasFood && !o.foodReady);
-  const drinks = orders.filter((o) => o.hasDrinks && !o.drinksReady);
+  // Разбиваем заказы по категориям внутри функции
+  const foodOrders = orders
+    .filter((o) => o.hasFood && !o.foodReady)
+    .map((o) => ({
+      ...o,
+      items: o.items.filter((i) => i.category === 'food'),  // Только еда!
+    }));
+
+  const drinkOrders = orders
+    .filter((o) => o.hasDrinks && !o.drinksReady)
+    .map((o) => ({
+      ...o,
+      items: o.items.filter((i) => i.category === 'bar'),  // Только напитки!
+    }));
 
   return (
     <div style={{ padding: "0 22px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
       <div>
         <h3 style={{ color: COLORS.amber, marginBottom: 12 }}>Кухня</h3>
-        {food.length === 0 ? <p style={{ color: COLORS.muted }}>Нет заказов</p> : food.map((o) => (
+        {foodOrders.length === 0 ? <p style={{ color: COLORS.muted }}>Нет заказов</p> : foodOrders.map((o) => (
           <OrderCard key={o.id} order={o} now={now} onReady={() => onReady(o.id, "food")} type="food" />
         ))}
       </div>
       <div>
         <h3 style={{ color: COLORS.green, marginBottom: 12 }}>Бар</h3>
-        {drinks.length === 0 ? <p style={{ color: COLORS.muted }}>Нет заказов</p> : drinks.map((o) => (
+        {drinkOrders.length === 0 ? <p style={{ color: COLORS.muted }}>Нет заказов</p> : drinkOrders.map((o) => (
           <OrderCard key={o.id} order={o} now={now} onReady={() => onReady(o.id, "drinks")} type="bar" />
         ))}
       </div>

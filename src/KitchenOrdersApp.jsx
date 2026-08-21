@@ -68,19 +68,24 @@ export default function KitchenOrdersApp() {
 
   // Проверить текущего пользователя
   useEffect(() => {
-    getCurrentUser().then((u) => {
-      setUser(u);
-      setLoading(false);
-    });
+  const initAuth = async () => {
+    // Сначала проверяем текущую сессию
+    const { data: { session } } = await supabase.auth.getSession();
+    setUser(session?.user || null);
+    setLoading(false);
+  };
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-    });
+  initAuth();
 
-    return () => {
-      authListener?.subscription?.unsubscribe();
-    };
-  }, []);
+  // Слушаем изменения аутентификации
+  const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    setUser(session?.user || null);
+  });
+
+  return () => {
+    authListener?.subscription?.unsubscribe();
+  };
+}, []);
 
   // Загрузить состояние и подписаться на изменения
   useEffect(() => {

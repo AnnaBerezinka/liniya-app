@@ -62,7 +62,6 @@ export default function KitchenOrdersApp() {
   const [tick, setTick] = useState(Date.now());
   const [showDateModal, setShowDateModal] = useState(false);
   const [newDateInput, setNewDateInput] = useState(new Date().toISOString().split("T")[0]);
-  const lastSyncRef = useRef(0);
   const stateRef = useRef(state);
   const subscriptionRef = useRef(null);
   stateRef.current = state;

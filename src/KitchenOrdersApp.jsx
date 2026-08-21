@@ -447,15 +447,16 @@ function Header({ tab, setTab, onReset, orders, currentDate, eventDates, onSwitc
     { id: "kitchen", label: "Кухня / Бар", mark: "02" },
     { id: "analytics", label: "Аналитика", mark: "03" },
   ];
+  
   return (
     <div style={{ borderBottom: `1px solid ${COLORS.line}`, padding: "12px 22px 0 22px" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, gap: 10, minHeight: 40 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 10, minWidth: 200 }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 8, minWidth: 200 }}>
           <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700, fontSize: 18, letterSpacing: 1 }}>ЛИНИЯ</span>
-          <span style={{ fontSize: 11, color: COLORS.muted, letterSpacing: 0.5, whiteSpace: "nowrap" }}>приём и выполнение</span>
+          <span style={{ fontSize: 11, color: COLORS.muted }}>приём</span>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end", flex: 1, flexWrap: "wrap" }}>
           <select value={currentDate} onChange={(e) => onSwitchDate(e.target.value)} style={{
             fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, padding: "6px 10px", borderRadius: 4,
             border: `1px solid ${COLORS.line}`, background: COLORS.panel, color: COLORS.ink, cursor: "pointer",
@@ -470,7 +471,7 @@ function Header({ tab, setTab, onReset, orders, currentDate, eventDates, onSwitc
 
           <span style={{ fontSize: 10, color: COLORS.muted, whiteSpace: "nowrap" }}>👤 {user?.email?.split("@")[0]}</span>
 
-          <span style={{ fontSize: 11, color: active > 0 ? COLORS.amber : COLORS.muted, fontWeight: 600, whiteSpace: "nowrap" }}>в очереди: {active}</span>
+          <span style={{ fontSize: 11, color: active > 0 ? COLORS.amber : COLORS.muted, fontWeight: 600, whiteSpace: "nowrap" }}>очередь: {active}</span>
 
           <button onClick={onLogout} style={{
             fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, padding: "6px 10px", borderRadius: 4,

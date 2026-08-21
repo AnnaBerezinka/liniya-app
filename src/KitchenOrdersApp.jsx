@@ -447,61 +447,64 @@ function Header({ tab, setTab, onReset, orders, currentDate, eventDates, onSwitc
     { id: "kitchen", label: "Кухня / Бар", mark: "02" },
     { id: "analytics", label: "Аналитика", mark: "03" },
   ];
-  
   return (
-    <div style={{ borderBottom: `1px solid ${COLORS.line}`, padding: "18px 22px 0 22px" }}>
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 10 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-          <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700, fontSize: 20, letterSpacing: 1 }}>ЛИНИЯ</span>
-          <span style={{ fontSize: 12, color: COLORS.muted, letterSpacing: 0.5 }}>приём и выполнение заказов</span>
+    <div style={{ borderBottom: `1px solid ${COLORS.line}`, padding: "12px 22px 0 22px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, gap: 10, minHeight: 40 }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 10, minWidth: 200 }}>
+          <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700, fontSize: 18, letterSpacing: 1 }}>ЛИНИЯ</span>
+          <span style={{ fontSize: 11, color: COLORS.muted, letterSpacing: 0.5, whiteSpace: "nowrap" }}>приём и выполнение</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontSize: 11, color: COLORS.muted }}>👤 {user?.email?.split("@")[0]}</span>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
           <select value={currentDate} onChange={(e) => onSwitchDate(e.target.value)} style={{
             fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, padding: "6px 10px", borderRadius: 4,
             border: `1px solid ${COLORS.line}`, background: COLORS.panel, color: COLORS.ink, cursor: "pointer",
           }}>
             {eventDates.map((d) => (<option key={d} value={d}>{d}</option>))}
           </select>
+
           <button onClick={onShowDateModal} style={{
             fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, padding: "6px 10px", borderRadius: 4,
-            border: `1px solid ${COLORS.amber}`, background: COLORS.amberSoft, color: COLORS.ink, cursor: "pointer",
-          }}>+ новая дата</button>
-          {showDateModal && (
-            <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999 }}>
-              <div style={{ background: COLORS.panel, border: `1px solid ${COLORS.line}`, borderRadius: 8, padding: "20px", minWidth: "300px" }}>
-                <h3 style={{ marginTop: 0 }}>Новая дата</h3>
-                <input type="date" value={newDateInput} onChange={(e) => setNewDateInput(e.target.value)} style={{
-                  width: "100%", padding: "8px", marginBottom: "16px", fontSize: "13px", border: `1px solid ${COLORS.line}`,
-                  borderRadius: 4, background: COLORS.bg, color: COLORS.ink, boxSizing: "border-box",
-                }} />
-                <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={() => onCreateNewDate(newDateInput)} style={{
-                    flex: 1, padding: "8px", background: COLORS.amber, color: "#FFF", border: "none", borderRadius: 4, cursor: "pointer",
-                  }}>Создать</button>
-                  <button onClick={onCloseModal} style={{
-                    flex: 1, padding: "8px", background: COLORS.panel2, color: COLORS.ink, border: `1px solid ${COLORS.line}`, borderRadius: 4, cursor: "pointer",
-                  }}>Отмена</button>
-                </div>
-              </div>
-            </div>
-          )}
-          <span style={{ fontSize: 11, color: active > 0 ? COLORS.amber : COLORS.muted, fontWeight: 600 }}>в очереди: {active}</span>
-          <button onClick={onReset} style={{
-            fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, padding: "6px 10px", borderRadius: 4,
-            border: `1px solid ${COLORS.line}`, background: "transparent", color: COLORS.muted, cursor: "pointer",
-          }}>сбросить всё</button>
+            border: `1px solid ${COLORS.amber}`, background: COLORS.amberSoft, color: COLORS.ink, cursor: "pointer", whiteSpace: "nowrap",
+          }}>+ дата</button>
+
+          <span style={{ fontSize: 10, color: COLORS.muted, whiteSpace: "nowrap" }}>👤 {user?.email?.split("@")[0]}</span>
+
+          <span style={{ fontSize: 11, color: active > 0 ? COLORS.amber : COLORS.muted, fontWeight: 600, whiteSpace: "nowrap" }}>в очереди: {active}</span>
+
           <button onClick={onLogout} style={{
             fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, padding: "6px 10px", borderRadius: 4,
-            border: `1px solid ${COLORS.red}`, background: "transparent", color: COLORS.red, cursor: "pointer",
+            border: `1px solid ${COLORS.red}`, background: "transparent", color: COLORS.red, cursor: "pointer", whiteSpace: "nowrap",
           }}>выход</button>
         </div>
       </div>
-      <div style={{ display: "flex", gap: 2, borderBottom: `1px solid ${COLORS.line}` }}>
+
+      {showDateModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999 }}>
+          <div style={{ background: COLORS.panel, border: `1px solid ${COLORS.line}`, borderRadius: 8, padding: "20px", minWidth: "300px" }}>
+            <h3 style={{ marginTop: 0 }}>Новая дата</h3>
+            <input type="date" value={newDateInput} onChange={(e) => setNewDateInput(e.target.value)} style={{
+              width: "100%", padding: "8px", marginBottom: "16px", fontSize: "13px", border: `1px solid ${COLORS.line}`,
+              borderRadius: 4, background: COLORS.bg, color: COLORS.ink, boxSizing: "border-box",
+            }} />
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={() => onCreateNewDate(newDateInput)} style={{
+                flex: 1, padding: "8px", background: COLORS.amber, color: "#FFF", border: "none", borderRadius: 4, cursor: "pointer",
+              }}>Создать</button>
+              <button onClick={onCloseModal} style={{
+                flex: 1, padding: "8px", background: COLORS.panel2, color: COLORS.ink, border: `1px solid ${COLORS.line}`, borderRadius: 4, cursor: "pointer",
+              }}>Отмена</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: "flex", gap: 2, borderBottom: `1px solid ${COLORS.line}`, overflowX: "auto" }}>
         {tabs.map((t) => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
             padding: "12px 16px", borderBottom: tab === t.id ? `2px solid ${COLORS.amber}` : "none", background: "transparent",
             color: tab === t.id ? COLORS.amber : COLORS.muted, cursor: "pointer", fontFamily: "'IBM Plex Mono', monospace", fontSize: 11,
+            whiteSpace: "nowrap",
           }}>
             <span style={{ opacity: 0.6 }}>{t.mark}</span> {t.label}
           </button>
@@ -741,7 +744,7 @@ const filteredData = useMemo(() => {
     }
     return data;
   }, [selectedDates, state.events]);
-    
+
   const rows = useMemo(() => {
     return Object.values(filteredData).sort((a, b) => {
       const sumA = Object.values(a.dates).reduce((s, d) => s + d.revenue, 0);

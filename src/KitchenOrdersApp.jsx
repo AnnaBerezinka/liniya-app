@@ -337,14 +337,16 @@ function LoginScreen({ onSignUp, onSignIn }) {
 
   return (
     <div style={{
-      background: COLORS.bg,
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontFamily: "'IBM Plex Sans', sans-serif",
-      padding: "20px",
-    }}>
+  background: COLORS.bg,
+  minHeight: "100vh",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontFamily: "'IBM Plex Sans', sans-serif",
+  padding: "20px",
+  overflow: "hidden", 
+  position: "relative",   
+}}>
       <style>{FONTS_CSS}</style>
       <div style={{
         background: COLORS.panel,

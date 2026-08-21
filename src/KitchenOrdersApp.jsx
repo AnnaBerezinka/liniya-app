@@ -97,27 +97,24 @@ export default function KitchenOrdersApp() {
       }
 
       // Подписываемся на real-time изменения
-      const handleStateChange = async () => {
-        const allStates = await loadAllStates();
-        const merged = mergeAllStates(allStates);
-        if (mounted && merged) {
-          setState(merged);
-        }
-      };
-
+   const handleStateChange = async () => {
+  const state = await loadState();
+  if (mounted && state) {
+    setState(state);
+  }
+};
       subscriptionRef.current = subscribeToStateChanges(handleStateChange);
     };
 
     init();
 
     // Опциональный poll для синхронизации
-    const poll = setInterval(async () => {
-      const allStates = await loadAllStates();
-      const merged = mergeAllStates(allStates);
-      if (mounted && merged) {
-        setState(merged);
-      }
-    }, POLL_MS);
+const poll = setInterval(async () => {
+  const state = await loadState();
+  if (mounted && state) {
+    setState(state);
+  }
+}, POLL_MS);
 
     const clock = setInterval(() => setTick(Date.now()), 1000);
 

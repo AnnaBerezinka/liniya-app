@@ -709,7 +709,7 @@ function OrderCard({ order, now, onReady, type }) {
 }
 
 const AnalyticsScreen = React.memo(function AnalyticsScreen({ state }) {
-  const allDates = Object.keys(state.events).sort().reverse();
+  const allDates = Object.keys(state.events).sort();
   const [selectedDates, setSelectedDates] = useState([state.currentDate]);
   const [sortOrder, setSortOrder] = useState('category-revenue');
 
@@ -724,26 +724,24 @@ const AnalyticsScreen = React.memo(function AnalyticsScreen({ state }) {
   const currentRevenue = allCompleted.reduce((s, o) => s + o.items.reduce((sum, i) => sum + i.price * i.qty, 0), 0);
   const avgReadyMs = allCompleted.length > 0 ? allCompleted.reduce((s, o) => s + (o.completedAt - o.createdAt), 0) / allCompleted.length : 0;
 
-  const filteredData = useMemo(() => {
+const filteredData = useMemo(() => {
     const data = {};
     for (const date of selectedDates) {
       const evt = state.events[date];
       if (!evt) continue;
       const completed = evt.orders.filter((o) => o.completed);
-      const perItem = {};
       for (const o of completed) {
         for (const i of o.items) {
-          if (!perItem[i.id]) perItem[i.id] = { name: i.name, category: i.category, dates: {} };
-          if (!perItem[i.id].dates[date]) perItem[i.id].dates[date] = { qty: 0, revenue: 0 };
-          perItem[i.id].dates[date].qty += i.qty;
-          perItem[i.id].dates[date].revenue += i.qty * i.price;
+          if (!data[i.id]) data[i.id] = { name: i.name, category: i.category, dates: {} };
+          if (!data[i.id].dates[date]) data[i.id].dates[date] = { qty: 0, revenue: 0 };
+          data[i.id].dates[date].qty += i.qty;
+          data[i.id].dates[date].revenue += i.qty * i.price;
         }
       }
-      Object.assign(data, perItem);
     }
     return data;
   }, [selectedDates, state.events]);
-
+    
   const rows = useMemo(() => {
     return Object.values(filteredData).sort((a, b) => {
       const sumA = Object.values(a.dates).reduce((s, d) => s + d.revenue, 0);
